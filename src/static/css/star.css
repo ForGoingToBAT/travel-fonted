@@ -1,0 +1,40 @@
+.s-star{
+	display: inline-block;
+	margin: 0 5px;
+	vertical-align: -1px;
+}
+.s-common{
+	width: 67px;
+	height: 13px;
+	overflow: hidden;
+}
+.s-star1{
+	width: 67px;
+	height: 13px;
+	background: url(../img/shopping-icons3.png) no-repeat -112px -90px;
+	overflow: hidden;
+}
+.s-star2{
+	width: 67px;
+	height: 13px;
+	background: url(../img/shopping-icons3.png) no-repeat -99px -90px;
+	overflow: hidden;
+}
+.s-star3{
+	width: 67px;
+	height: 13px;
+	background: url(../img/shopping-icons3.png) no-repeat -86px -90px;
+	overflow: hidden;
+}
+.s-star4{
+	width: 67px;
+	height: 13px;
+	background: url(../img/shopping-icons3.png) no-repeat -73px -90px;
+	overflow: hidden;
+}
+.s-star5{
+	width: 67px;
+	height: 13px;
+	background: url(../img/shopping-icons3.png) no-repeat -60px -90px;
+	overflow: hidden;
+}
