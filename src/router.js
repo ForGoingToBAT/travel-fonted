@@ -6,6 +6,10 @@ import city from './components/citys'
 import views from './components/views'
 import login from './components/LoginStyle'
 import register from './components/registerPage'
+import person from './components/person'
+import personInfo from './components/personInfo'
+import UserRouter from './components/UserRouter'
+import UserMessage from "./components/UserMessage"
 Vue.use(VueRouter)
 
 export default new VueRouter({
@@ -18,10 +22,6 @@ export default new VueRouter({
         {
             path:'/site',
             component:site
-        },
-        {
-            path:'/person',
-            component:index
         },
         {
             path:'/login',
@@ -38,6 +38,24 @@ export default new VueRouter({
         {
             path:"/views",//使用:作为占位符号
             component:views
+        },
+        {
+            path:"/person",
+            component:person,
+            children:[
+                {
+                    path:"/person/info",
+                    component:personInfo
+                },
+                {
+                    path: "/person/userRouter",
+                    component:UserRouter
+                },
+                {
+                    path:"/person/userMessage",
+                    component:UserMessage
+                }
+            ]
         }
     ]
 
