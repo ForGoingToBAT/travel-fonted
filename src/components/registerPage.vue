@@ -23,7 +23,7 @@
 
 <script></script>
 
-<style>
+<style scoped>
 .register-page {
   margin-top: 20px;
   margin-left: auto;

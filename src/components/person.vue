@@ -9,7 +9,7 @@
   >
     <div class="col-lg-3 col-md-3">
       <ul class="list-group">
-        <router-link class="list-group-item" to="/person/info"
+        <router-link class="list-group-item" to="/person"
           >我的个人资料</router-link
         >
         <router-link class="list-group-item" to="/person/userRouter"

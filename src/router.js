@@ -10,6 +10,7 @@ import person from './components/person'
 import personInfo from './components/personInfo'
 import UserRouter from './components/UserRouter'
 import UserMessage from "./components/UserMessage"
+import RouteDetail from './components/routeDetail'
 Vue.use(VueRouter)
 
 export default new VueRouter({
@@ -40,11 +41,15 @@ export default new VueRouter({
             component:views
         },
         {
+            path:"/routeDetail",
+            component:RouteDetail
+        },
+        {
             path:"/person",
             component:person,
             children:[
                 {
-                    path:"/person/info",
+                    path:"/person",
                     component:personInfo
                 },
                 {
