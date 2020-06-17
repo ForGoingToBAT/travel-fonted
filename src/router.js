@@ -40,7 +40,7 @@ export default new VueRouter({
             path:"/views",//使用:作为占位符号
             component:views
         },
-        {
+        {//路线的详情
             path:"/routeDetail",
             component:RouteDetail
         },

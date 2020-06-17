@@ -3,7 +3,7 @@
   <div class="container">
     <div class="de-header" style="display: flex; position: relative;">
       <div class="left">
-        <h3>江浙沪4日经典路线</h3>
+        <h3>{{ title }}</h3>
         <span class="season">
           <i class="icon-season"></i>
           最佳季节:
@@ -34,24 +34,19 @@
     <div class="choose">
       <ul class="clearfix">
         <li class="on" data-scroll="overview">
-          <a href="#routeIntro">行程概况</a>
+          <a href="javascript:void(0);" @click="scroll(1)">行程概况</a>
         </li>
         <li data-scroll="detail" class="">
-          <a href="#routeIntroDetails">行程详情</a>
+          <a href="javascript:void(0);" @click="scroll(2)">行程详情</a>
         </li>
         <li data-scroll="discuss" class="">
-          <a href="#discuss">讨论区</a>
-        </li>
-        <li class="nav-right" data-scroll="comments">
-          <a class="btn-reviews" href="javascript:void(0)" style="color: #fff;"
-            >点评</a
-          >
+          <a href="javascript:void(0);" @click="scroll(3)">讨论区</a>
         </li>
       </ul>
     </div>
     <div class="contents">
       <div class="content">
-        <h3>行程概况</h3>
+        <h3 class="router1">行程概况</h3>
         <div id="routeIntro" style="font-size: 14px;">
           <span>起点----></span>
           <span v-for="(view, index) in views" v-bind:key="index">
@@ -64,7 +59,7 @@
       <hr />
       <!---->
       <div class="content">
-        <h3>行程详情</h3>
+        <h3 class="router2">行程详情</h3>
         <div id="routeIntroDetails">
           <div class="routeIntroDetail" style="position: relative;">
             <div class="viewName">北京</div>
@@ -87,7 +82,9 @@
       </div>
       <hr />
       <div class="content">
-        <h3 style="text-align: center; margin-bottom: 30px;">线路讨论区</h3>
+        <h3 class="router3" style="text-align: center; margin-bottom: 30px;">
+          线路讨论区
+        </h3>
         <div id="discuss">
           <div
             class="comment-form clearfix"
@@ -131,13 +128,17 @@
 </template>
 
 <script>
+import $ from "jquery";
 export default {
   name: "routeDetail",
   mounted() {
-    console.log("------------");
+    window.addEventListener("scroll", this.handleScroll);
+    this.title = this.$route.query.title;
+    console.log(this.$route.query.title);
   },
   data() {
     return {
+      title: "测试",
       views: [
         {
           view: "兵马用",
@@ -153,6 +154,45 @@ export default {
         },
       ],
     };
+  },
+  methods: {
+    handleScroll: function () {
+      let scrollTop = $(window).scrollTop(); //获取页面上移的高度
+      let router1 = $(".router1")[0].offsetTop;
+      if (scrollTop >= router1) {
+        $(".clearfix:first").css({
+          position: "fixed",
+          top: 0,
+          backgroundColor: "#c0c0c0",
+          width: "76%",
+          zIndex: "999",
+        });
+      } else {
+        $(".clearfix:first").css({
+          position: "",
+          top: "",
+          backgroundColor: "",
+          width: "",
+        });
+      }
+    },
+    scroll: function (message) {
+      let router1 = $(".router1")[0].offsetTop;
+      let router2 = $(".router2")[0].offsetTop;
+      let router3 = $(".router3")[0].offsetTop;
+
+      switch (message) {
+        case 1:
+          $(window).scrollTop(router1);
+          break;
+        case 2:
+          $(window).scrollTop(router2);
+          break;
+        case 3:
+          $(window).scrollTop(router3);
+          break;
+      }
+    },
   },
 };
 </script>

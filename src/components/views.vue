@@ -2,8 +2,8 @@
   <div class="container" style="padding-left: 0; padding-right: 0;">
     <h3 class="viewname">{{ viewIntroduce.viewname }}</h3>
     <div class="introduce">
-      <a href="#">概况</a>
-      <a href="#comment-dot">评论</a>
+      <a href="javascript:void(0);" @click="viewsScroll(1)">概况</a>
+      <a href="javascript:void(0);" @click="viewsScroll(2)">评论</a>
       <button
         type="button"
         class="btn btn-primary float-right"
@@ -260,6 +260,7 @@ import $ from "jquery";
 export default {
   mounted: function () {
     this.viewIntroduce.viewname = this.$route.query.viewname;
+    // window.addEventListener("scroll", this.swap);
   },
   data() {
     return {
@@ -359,6 +360,28 @@ export default {
     };
   },
   methods: {
+    // swap: function () {
+    //   let dynamicHeight = $(window).scrollTop();
+    //   let height = $(".introduce")[0].offsetTop;
+    //   console.log(dynamicHeight + "---" + height);
+    //   if (dynamicHeight >= height) {
+    //     $(".introduce").css({
+    //       position: "fixed",
+    //       top: "0",
+    //       width: "80%",
+    //       zIndex: 999,
+    //       backgroundColor: "#c0c0c0",
+    //     });
+    //   } else {
+    //     $(".introduce").css({
+    //       position: "",
+    //       top: "",
+    //       zIndex: "",
+    //       width: "",
+    //       backgroundColor: "",
+    //     });
+    //   }
+    // },
     writeComment: function (message) {
       if (message === 1) {
         $(event.target)
@@ -412,6 +435,20 @@ export default {
           .eq(message - 1)
           .attr("title")
       );
+    },
+    viewsScroll: function (message) {
+      console.log(message);
+      let height1 = $(".content")[0].offsetTop;
+      let height2 = $(".views-comments")[0].offsetTop;
+      console.log(height2 + "-" + height1);
+      switch (message) {
+        case 1:
+          $(window).scrollTop(height1);
+          break;
+        case 2:
+          $(window).scrollTop(height2);
+          break;
+      }
     },
     addImages: function (event) {
       var imgFiles = event.target.files;

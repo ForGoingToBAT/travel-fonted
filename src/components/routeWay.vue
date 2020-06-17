@@ -1,5 +1,5 @@
 <template>
-  <div class="row no-gutters">
+  <div class="row no-gutters" @click="toDetail(data.title)">
     <div class="col-md-2">
       <img :src="data.img" class="card-img" alt="..." />
     </div>
@@ -11,7 +11,7 @@
           <small class="text-muted">
             <span>起点--</span>
             <span v-for="(site, index) in data.sites" v-bind:key="index"
-              ><a @click="seeViews(site.name)">{{ site.name }}</a
+              ><a @click.prevent="seeViews(site.name)">{{ site.name }}</a
               >--</span
             >
             <span>终点</span>
@@ -38,6 +38,9 @@ export default {
   methods: {
     seeViews: function (message) {
       this.$router.push({ path: "/views", query: { viewname: message } });
+    },
+    toDetail: function (message) {
+      this.$router.push({ path: "/routeDetail", query: { title: message } });
     },
   },
 };
