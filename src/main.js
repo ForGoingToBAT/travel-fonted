@@ -5,8 +5,18 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min'
 
 Vue.config.productionTip = false
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+import Vuex from 'vuex'
+import store from './vuex/store'
+import Base64 from './util/Base64.js'
 
+Vue.prototype.$Base64 = Base64;
+Vue.prototype.$axios = axios
+
+Vue.use(VueAxios, axios,Vuex)
 new Vue({
   router,
+  store,
   render: h => h(App),
 }).$mount('#app')

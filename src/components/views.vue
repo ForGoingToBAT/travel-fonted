@@ -1,47 +1,39 @@
 <template>
   <div class="container" style="padding-left: 0; padding-right: 0;">
-    <h3 class="viewname">{{ viewIntroduce.viewname }}</h3>
+    <h3 class="viewname" v-if="viewIntroduce!==null" v-text="viewIntroduce.siteName"></h3>
     <div class="introduce">
       <a href="javascript:void(0);" @click="viewsScroll(1)">概况</a>
       <a href="javascript:void(0);" @click="viewsScroll(2)">评论</a>
-      <button
-        type="button"
-        class="btn btn-primary float-right"
-        data-toggle="modal"
-        data-target="#staticBackdrop"
-      >
+      <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#staticBackdrop">
         我要点评
       </button>
     </div>
     <!--景点的图片-->
-    <div class="content" style="margin-top: 20px;">
+    <div class="content" style="margin-top: 20px;"   v-if="viewIntroduce!==null">
       <div class="view-image">
-        <div class="col-md-8" style="position: relative;">
-          <img :src="viewIntroduce.images[0]" class="col-md-12" />
-          <span class="images"
-            >共<span>{{ viewIntroduce.imagesnum }}</span
-            >张图片</span
-          >
+        <div class="col-md-8" style="position: relative;" >
+          <img :src="images[0]" class="col-md-12" />
+          <span class="images">共<span>{{ imagesNum }}</span>张图片</span>
         </div>
-        <div class="col-md-4">
-          <img :src="viewIntroduce.images[1]" class="col-md-12" />
-          <img :src="viewIntroduce.images[2]" class="col-md-12" />
+        <div class="col-md-4" >
+          <img :src="images[1]" class="col-md-12" />
+          <img :src="images[2]" class="col-md-12" />
         </div>
       </div>
     </div>
 
     <!--景点的介绍-->
-    <div class="view-intro">
-      <div class="summary" v-html="viewIntroduce.viewIntro"></div>
+    <div class="view-intro"   v-if="viewIntroduce!==null" >
+      <h4>景点介绍</h4>
+      <div class="summary"  v-html="viewIntroduce.siteDetail"></div>
       <br />
       <p>
         <span>门票</span><br />
-        <span>{{ viewIntroduce.price }}/天</span><br />
+        <span  >{{ viewIntroduce.sitePrice }}/天</span><br />
       </p>
       <p>
         <span>开放时间</span><br />
-        <span>{{ viewIntroduce.openTime }}</span
-        ><br />
+        <span>{{ viewIntroduce.openTime }}</span><br />
       </p>
       <hr />
     </div>
@@ -134,26 +126,12 @@
     </div>
 
     <!--点评的蒙版-->
-    <div
-      class="modal fade"
-      id="staticBackdrop"
-      data-backdrop="static"
-      data-keyboard="false"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="staticBackdropLabel"
-      aria-hidden="true"
-    >
+    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">大连古城</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
+            <h5 class="modal-title" id="staticBackdropLabel"  v-if="viewIntroduce!==null" v-text="viewIntroduce.siteName"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -166,36 +144,11 @@
                 <div class="review-star" style="position: relative;">
                   <span class="_j_starcount star0"></span>
                   <div class="click-star _j_starlist">
-                    <a
-                      role="button"
-                      title="不建议"
-                      rel="nofollow"
-                      @click="star(1)"
-                    ></a>
-                    <a
-                      role="button"
-                      title="有待改善"
-                      rel="nofollow"
-                      @click="star(2)"
-                    ></a>
-                    <a
-                      role="button"
-                      title="还可以"
-                      rel="nofollow"
-                      @click="star(3)"
-                    ></a>
-                    <a
-                      role="button"
-                      title="值得一去"
-                      rel="nofollow"
-                      @click="star(4)"
-                    ></a>
-                    <a
-                      role="button"
-                      title="强烈推荐"
-                      rel="nofollow"
-                      @click="star(5)"
-                    ></a>
+                    <a role="button" title="不建议" rel="nofollow" @click="star(1)"></a>
+                    <a role="button" title="有待改善" rel="nofollow" @click="star(2)"></a>
+                    <a role="button" title="还可以" rel="nofollow" @click="star(3)"></a>
+                    <a role="button" title="值得一去" rel="nofollow" @click="star(4)"></a>
+                    <a role="button" title="强烈推荐" rel="nofollow" @click="star(5)"></a>
                   </div>
                 </div>
                 <span class="txt-tips _j_startip">点击星星打分</span>
@@ -207,12 +160,8 @@
                 <span>内容</span>
               </div>
               <div class="col-md-10">
-                <textarea
-                  class="col-md-12"
-                  placeholder="100字+3图,有机会获得优质点评"
-                  rows="4"
-                ></textarea>
-                <small>内容不超过1000字</small>
+                <textarea class="col-md-12" placeholder="100字+3图,有机会获得优质点评" rows="4" v-model="comment"></textarea>
+                <small>内容不超过300字</small>
               </div>
             </div>
 
@@ -223,13 +172,7 @@
               <div class="col-md-10">
                 <div class="upload-img-btn">
                   <i></i>
-                  <input
-                    type="file"
-                    class="upload-img"
-                    id="uploadImgs"
-                    @change="addImages($event)"
-                    multiple="multiple"
-                  />
+                  <input type="file" class="upload-img" id="uploadImgs" @change="addImages($event)" multiple="multiple"/>
                   <div id="img-preview" class="img-preview d-flex"></div>
                 </div>
                 <small>最多上传4张</small>
@@ -239,11 +182,7 @@
           <div class="modal-footer" style="justify-content: unset;">
             <div class="col-md-2"></div>
             <div class="col-md-10">
-              <button
-                type="button"
-                class="btn btn-primary"
-                style="width: 97px; background-color: #ff8a00; border: none;"
-              >
+              <button type="button" class="btn btn-primary" style="width: 97px; background-color: #ff8a00; border: none;" @click="submitComment()">
                 提交
               </button>
             </div>
@@ -256,32 +195,40 @@
 
 <script>
 import $ from "jquery";
-
+import Service from "../request/Service";
+import qs from 'qs';
 export default {
   mounted: function () {
-    this.viewIntroduce.viewname = this.$route.query.viewname;
-    // window.addEventListener("scroll", this.swap);
+    let object = this.$Base64.decode(this.$route.query.site)
+    this.viewIntroduce = JSON.parse(object.toString());
+  },
+  watch:{
+    viewIntroduce:function (newValue) {
+      console.log(newValue.siteName)
+    }
+  },
+  computed:{
+    images:function () {
+      if(this.viewIntroduce!=null&&this.viewIntroduce.siteImg!=null) {
+        return this.viewIntroduce.siteImg.split(";")
+      }else{
+        return null;
+      }
+    },
+    imagesNum:function () {
+      if(this.viewIntroduce!=null&&this.viewIntroduce.siteImg!=null) {
+        return this.viewIntroduce.siteImg.split(";").length;
+      }else{
+        return 0;
+      }
+    }
   },
   data() {
     return {
       reply_window: true,
-      viewIntroduce: {
-        viewname: "陕西省兵马俑",
-        imagesnum: 300,
-        images: [
-          require("../static/img/demo2.jpg"),
-          require("../static/img/demo2.jpg"),
-          require("../static/img/demo2.jpg"),
-        ],
-        viewIntro:
-          "·历经1400多年的西街，是阳朔最古老繁华的街道，也是阳朔重要旅游景点之一。<br>" +
-          "·西街由觅食、逛街、泡吧等多个词汇集结而成，正因如此丰富多彩，成了阳朔一道独特而靓丽的风景线。<br>" +
-          "·不足1km 的街道由石板砌成，呈弯曲的S形，两旁房屋古朴典雅，桂北明清时期风格，小青瓦、坡屋面、白粉墙、吊阳台。<br>" +
-          "·街上摆满了各种旅游纪念品，两旁的商铺都是中西合璧的，几乎所有的招牌都是中英文对照，服务员能用流利外语为游客服务。<br>" +
-          "·来西街，久负盛名当属阳朔第一名菜的啤酒鱼不可不尝，这里还有很多酒吧，夜幕降临，比白昼更加热闹。",
-        price: 80,
-        openTime: "全天",
-      },
+      viewIntroduce: null,
+      stars:'',//评价的星级
+      comment:'',//模板的评论
       userinfos: [
         {
           userFont: require("../static/img/logo.png"), //解决图片不显示的问题
@@ -360,28 +307,6 @@ export default {
     };
   },
   methods: {
-    // swap: function () {
-    //   let dynamicHeight = $(window).scrollTop();
-    //   let height = $(".introduce")[0].offsetTop;
-    //   console.log(dynamicHeight + "---" + height);
-    //   if (dynamicHeight >= height) {
-    //     $(".introduce").css({
-    //       position: "fixed",
-    //       top: "0",
-    //       width: "80%",
-    //       zIndex: 999,
-    //       backgroundColor: "#c0c0c0",
-    //     });
-    //   } else {
-    //     $(".introduce").css({
-    //       position: "",
-    //       top: "",
-    //       zIndex: "",
-    //       width: "",
-    //       backgroundColor: "",
-    //     });
-    //   }
-    // },
     writeComment: function (message) {
       if (message === 1) {
         $(event.target)
@@ -423,18 +348,16 @@ export default {
       this.reply_window = !this.reply_window;
     },
     star: function (message) {
-      $("._j_starcount")
-        .removeClass(function () {
+      $("._j_starcount").removeClass(function () {
           return (
             "star" + 1 + " star" + 2 + " star" + 3 + " star" + 4 + " star" + 5
           );
-        })
-        .addClass("star" + message);
+      }).addClass("star" + message);
       $(".txt-tips").html(
-        $("._j_starlist a")
-          .eq(message - 1)
-          .attr("title")
+          $("._j_starlist a").eq(message - 1).attr("title")
       );
+      //设置stars的数据
+      this.stars = message;
     },
     viewsScroll: function (message) {
       console.log(message);
@@ -451,34 +374,80 @@ export default {
       }
     },
     addImages: function (event) {
-      var imgFiles = event.target.files;
+      let imgFiles = event.target.files;
       console.log(imgFiles);
-      var length = $("#img-preview").children().length;
+      let length = $("#img-preview").children().length;
       if (length >= 4) {
         alert("超过最大上传照片的数量");
       } else {
         for (let i = 0; i < imgFiles.length; i++) {
-          var filePath = imgFiles[i].name;
-          var fileFormat = filePath.split(".")[1].toLowerCase();
-          var src = window.URL.createObjectURL(imgFiles[i]);
+          let filePath = imgFiles[i].name;
+          let fileFormat = filePath.split(".")[1].toLowerCase();
           if (!fileFormat.match(/png|jpg|jpeg/)) {
             alert("上传错误,文件格式必须为：png/jpg/jpeg");
             return;
           }
-          var $divparent = $(
-            "<div class='simple-img' style='position:relative;'></div>"
-          );
-          var $img = $(
-            "<img src='" +
-              src +
-              "' style='width:100px;height:100px;border:1px solid #c0c0c0;'/>"
-          );
-          $divparent.append($img);
-          var preview = $("#img-preview");
-          preview.append($divparent); //添加孩子结点
+          //请求后台上传图片 拿到地址
+          let formdata = new FormData();// 创建form对象
+          formdata.append('image',imgFiles[i],imgFiles[i].name);
+          $.ajax({
+            url: "http://106.12.208.167:8088/upload",
+            type:"post",
+            contentType: false,
+            processData: false,
+            data: formdata,
+            success: function (data) {
+              if (data.status === 200) {
+                let $divparent = $(
+                        "<div class='simple-img' style='position:relative;'></div>"
+                );
+                let $img = $(
+                        "<img src='" + data.url + "' style='width:100px;height:100px;border:1px solid #c0c0c0;'/>"
+                );
+                $divparent.append($img);
+                let preview = $("#img-preview");
+                preview.append($divparent); //添加孩子结点
+              }
+            },
+          })
         }
       }
     },
+
+    submitComment:function(){
+      let preview = $("#img-preview");
+      let children = preview.children(".simple-img");
+      let image="";
+      if(this.stars!==""&&this.comment!==""&&children!==undefined&&children.length!=0){
+        for(let i=0;i<children.length;i++){
+          let attr = children.eq(i).children("img").attr("src");
+          image=image + attr+";"
+        }
+        let length = image.length-1;
+        image = image.substring(0,length);
+        let stars = this.stars;
+        let comment = this.comment;
+        let siteId = this.viewIntroduce.id;
+        let userAccount = JSON.parse(sessionStorage.getItem("user")).userAccount;
+        // alert(userAccount);
+        console.log(stars,comment,siteId,userAccount,image)
+        Service.post("/comments",qs.stringify({
+            userAccount:userAccount,
+            siteId:siteId,
+            stars: stars,
+            comment:comment,
+            image:image
+        })).then(response=>{
+            alert(response.data.msg)
+            $('#staticBackdrop').modal('hide');
+            window.location.reload();
+        }).catch(function (error) {
+          console.log(error)
+        })
+      }else{
+        alert("请完善信息后再提交")
+      }
+    }
   },
 };
 </script>

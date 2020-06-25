@@ -5,116 +5,40 @@
       <a href="#"><span>最热门路线>></span></a>
     </div>
     <div class="card mb-3" v-for="(route, index) in routes" v-bind:key="index">
-      <routeWay :data="route"></routeWay>
+      <routeWay :route="route" v-if="route"></routeWay>
     </div>
   </div>
 </template>
 
 <script>
 import routeWay from "./routeWay.vue";
+import Service from '../request/Service'
 export default {
   components: {
     routeWay,
   },
+  created:function(){
+    this.getHotRoutes()
+  },
   data() {
     return {
-      routes: [
-        {
-          img: require("../static/img/demo2.jpg"),
-          title: "京进去",
-          content:
-            "This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.",
-          sites: [
-            {
-              id: 1,
-              name: "兵马俑",
-            },
-            {
-              id: 2,
-              name: "华清池",
-            },
-            {
-              id: 3,
-              name: "大唐芙蓉园",
-            },
-            {
-              id: 4,
-              name: "大雁塔",
-            },
-          ],
-        },
-        {
-          img: require("../static/img/demo2.jpg"),
-          title: "路线的标题",
-          content: "路线的介绍",
-          sites: [
-            {
-              id: 1,
-              name: "兵马俑",
-            },
-            {
-              id: 2,
-              name: "华清池",
-            },
-            {
-              id: 3,
-              name: "大唐芙蓉园",
-            },
-            {
-              id: 4,
-              name: "大雁塔",
-            },
-          ],
-        },
-        {
-          img: require("../static/img/demo2.jpg"),
-          title: "路线的标题",
-          content: "路线的介绍",
-          sites: [
-            {
-              id: 1,
-              name: "兵马俑",
-            },
-            {
-              id: 2,
-              name: "华清池",
-            },
-            {
-              id: 3,
-              name: "大唐芙蓉园",
-            },
-            {
-              id: 4,
-              name: "大雁塔",
-            },
-          ],
-        },
-        {
-          img: require("../static/img/demo2.jpg"),
-          title: "路线的标题",
-          content: "路线的介绍",
-          sites: [
-            {
-              id: 1,
-              name: "兵马俑",
-            },
-            {
-              id: 2,
-              name: "华清池",
-            },
-            {
-              id: 3,
-              name: "大唐芙蓉园",
-            },
-            {
-              id: 4,
-              name: "大雁塔",
-            },
-          ],
-        },
-      ],
+      page:1,//当前的页数
+      routes: null
     };
   },
+  methods:{
+    getHotRoutes:function(){
+      let that = this;
+      Service.get("/getHotRoutes",{
+        params:{
+          page:that.page
+        }
+      }).then(response => (that.routes = response.data.data))
+              .catch(function (error) { // 请求失败处理
+                  console.log(error);
+              });
+    }
+  }
 };
 </script>
 
