@@ -29,7 +29,7 @@
       <br />
       <p>
         <span>门票</span><br />
-        <span  >{{ viewIntroduce.sitePrice }}/天</span><br />
+        <span>{{ viewIntroduce.sitePrice }}/天</span><br />
       </p>
       <p>
         <span>开放时间</span><br />
@@ -39,85 +39,44 @@
     </div>
 
     <!--景点评论-->
-    <div class="views-comments" id="comment-dot">
+    <div class="views-comments" id="comment-dot" v-if="userinfos">
       <div class="comments-header">栖栖点评<span>(共300条真实评论)</span></div>
-      <div
-        class="media"
-        v-for="(userinfo, index) in userinfos"
-        v-bind:key="index"
-      >
-        <img
-          :src="userinfo.userFont"
-          class="mr-3"
-          style="
+      <div class="media"  v-for="(userinfo, index) in userinfos" v-bind:key="index">
+        <img :src="userinfo.ifont" class="mr-3" style="
             width: 40px;
             height: 40px;
             border-radius: 50%;
             border: 1px solid red;
-          "
-        />
+          "/>
         <div class="media-body">
-          <a class="name" href="#" target="_blank">{{ userinfo.username }}</a>
-          <span
-            class="s-star s-common"
-            :class="'s-star' + userinfo.stars"
-          ></span
-          ><br />
-          <p class="comments-content">{{ userinfo.comments }}</p>
+          <a class="name" href="#" target="_blank">{{ userinfo.userNickname }}</a>
+          <span class="s-star s-common" :class="'s-star' + userinfo.siteStars"></span><br />
+          <p class="comments-content">{{ userinfo.evaluateEvaluate }}</p>
           <!--照片墙-->
           <div class="views-img">
-            <img
-              :src="image.pic"
-              v-for="(image, index) in userinfo.viewImages"
-              v-bind:key="index"
-              class="col-md-3"
-            />
+            <img :src="image" v-for="(image, index) in userinfo.siteImg" v-bind:key="index" class="col-md-3"/>
           </div>
           <div class="info clearfix">
-            <a
-              class="view-comment"
-              title="添加评论"
-              href="javascript:void(0)"
-              @click="writeComment(1)"
-              >评论</a
-            >
-            <span class="time">{{ userinfo.commentTime }}</span>
+            <a class="view-comment" :data-parentaccount="userinfo.userAccount" title="添加评论" href="javascript:void(0)" @click="writeComment($event,1)">评论</a>
+            <span class="time">{{ userinfo.evaluateTime }}</span>
           </div>
           <hr style="margin-top: 5px;" />
-          <div class="views-replys">
-            <div
-              class="views-reply d-flex"
-              v-for="(reply, index) in userinfo.replys"
-              v-bind:key="index"
-            >
+          <div class="views-replys" v-if="userinfo.reply">
+            <div class="views-reply d-flex" v-for="(replyDetail, index) in userinfo.reply" v-bind:key="index">
               <div class="user-font">
-                <img
-                  :src="reply.replyUserFont"
-                  style="width: 15px; height: 15px;"
-                />
+                <img :src="replyDetail.userCommentFont" style="width: 15px; height: 15px;"/>
               </div>
               <div class="user-reply col-md-12">
-                <a href="#" class="username">{{ reply.replyName }}</a
-                >&nbsp;&nbsp;:&nbsp;&nbsp;<span>{{ reply.replyContent }}</span>
-                <a
-                  href="javascript:void(0)"
-                  style="margin-left: 5px; color: #deb887;"
-                  @click="writeComment(2)"
-                  >回复</a
-                ><br />
-                <span class="time">{{ reply.replyTime }}</span
-                ><br />
+                <a href="#" class="username">{{ replyDetail.userCommentNickName }}</a>&nbsp;&nbsp;:&nbsp;&nbsp;<span>{{ replyDetail.commentContent }}</span>
+                <a href="javascript:void(0)" style="margin-left: 5px; color: #deb887;" :data-replyAccount="replyDetail.userComment" @click="writeComment($event,2)">回复</a><br />
+                <span class="time">{{ replyDetail.commentDate }}</span><br />
               </div>
             </div>
           </div>
           <!--评论的窗口-->
           <div class="reply-window" style="margin-top: 10px; display: none;">
-            <textarea
-              placeholder=""
-              class="col-md-12"
-              style="border: 1px solid #deb887;"
-            />
-            <button class="btn btn-primary btn-sm" style="float: right;">
+            <textarea placeholder="" class="col-md-12" style="border: 1px solid #deb887;" v-model="commentMessage"/>
+            <button class="btn btn-primary btn-sm" style="float: right;" @click="uploadComment()" data-parentAccount="" data-userComment="">
               回复
             </button>
           </div>
@@ -201,6 +160,9 @@ export default {
   mounted: function () {
     let object = this.$Base64.decode(this.$route.query.site)
     this.viewIntroduce = JSON.parse(object.toString());
+    this.userAccount = JSON.parse(sessionStorage.getItem("user")).userAccount;
+    this.siteId = this.viewIntroduce.id;//获取地点的siteId
+    this.getCommentsAndReply()
   },
   watch:{
     viewIntroduce:function (newValue) {
@@ -227,93 +189,40 @@ export default {
     return {
       reply_window: true,
       viewIntroduce: null,
+      parentAccount:"",//父级评价的账户
+      userAccount:'',//当前用户的账户
+      commentAccount:"",//评论的账户
+      siteId:'',
+      replyAccount:"",
       stars:'',//评价的星级
       comment:'',//模板的评论
-      userinfos: [
-        {
-          userFont: require("../static/img/logo.png"), //解决图片不显示的问题
-          username: "Sofency",
-          stars: 1,
-          comments:
-            "Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum" +
-            "nunc ac nisi vulputate fringilla." +
-            "Donec lacinia congue felis in faucibus.",
-          viewImages: [
-            {
-              pic: "https://static.runoob.com/images/demo/demo3.jpg",
-              url: "",
-            },
-            {
-              pic: "https://static.runoob.com/images/demo/demo3.jpg",
-              url: "",
-            },
-            {
-              pic: "https://static.runoob.com/images/demo/demo3.jpg",
-              url: "",
-            },
-            {
-              pic: "https://static.runoob.com/images/demo/demo3.jpg",
-              url: "",
-            },
-          ],
-          commentTime: "2019-05-05 13:56:24",
-          replys: [
-            {
-              replyUserFont: require("../static/img/logo.png"),
-              replyName: "Sofency",
-              replyContent: "你好,大理古镇住哪个们比较方便的哪?",
-              replyTime: "2019-05-05 13:56:24",
-            },
-            {
-              replyUserFont: require("../static/img/logo.png"),
-              replyName: "Alice",
-              replyContent: "你好,大理古镇住哪个们比较方便的哪?",
-              replyTime: "2019-05-05 13:56:24",
-            },
-          ],
-        },
-        {
-          userFont: require("../static/img/logo.png"), //解决图片不显示的问题
-          username: "ALice",
-          stars: 4,
-          comments:
-            "Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum" +
-            "nunc ac nisi vulputate fringilla." +
-            "Donec lacinia congue felis in faucibus.",
-          viewImages: [
-            {
-              pic: "https://static.runoob.com/images/demo/demo3.jpg",
-              url: "",
-            },
-            {
-              pic: "https://static.runoob.com/images/demo/demo3.jpg",
-              url: "",
-            },
-            {
-              pic: "https://static.runoob.com/images/demo/demo3.jpg",
-              url: "",
-            },
-          ],
-          commentTime: "2019-05-05 13:56:24",
-          replys: [
-            {
-              replyName: "Sofency",
-              replyContent: "你好,大理古镇住哪个们比较方便的哪?",
-              replyTime: "2019-05-05 13:56:24",
-            },
-          ],
-        },
-      ],
+      commentMessage:"",//评论的消息
+      userinfos: [],
     };
   },
   methods: {
-    writeComment: function (message) {
+    writeComment: function (e,message) {
+      if (this.reply_window) {
+        $(e.target).parents(".media-body").children(".reply-window").css({
+          display: "block",
+        });
+        $(e.target).parents(".media-body").children(".reply-window").children("textarea").animate({
+                  height: "62px",
+                });
+      } else {
+        $(e.target).parents(".media-body").children(".reply-window").children("textarea").animate({
+                  height: "0px",
+                });
+        $(e.target).parents(".media-body").children(".reply-window").css({
+          display: "none",
+        });
+      }
+      this.reply_window = !this.reply_window;
       if (message === 1) {
-        $(event.target)
-          .parents(".media-body")
-          .children(".reply-window")
-          .children("textarea")
-          .attr("placeholder", "发表评论");
+        $(e.target).parents(".media-body").children(".reply-window").children("textarea").attr("placeholder", "发表评论");
+          // 获取当前属性的data属性
+        this.parentAccount = e.currentTarget.dataset.parentaccount
+
       } else {
         let username = $(event.target).parent().children(".username").html();
         $(event.target)
@@ -321,31 +230,8 @@ export default {
           .children(".reply-window")
           .children("textarea")
           .attr("placeholder", "回复" + username);
+          console.log(e.currentTarget.dataset.replyaccount)  //只能小写
       }
-      if (this.reply_window) {
-        $(event.target).parents(".media-body").children(".reply-window").css({
-          display: "block",
-        });
-        $(event.target)
-          .parents(".media-body")
-          .children(".reply-window")
-          .children("textarea")
-          .animate({
-            height: "62px",
-          });
-      } else {
-        $(event.target)
-          .parents(".media-body")
-          .children(".reply-window")
-          .children("textarea")
-          .animate({
-            height: "0px",
-          });
-        $(event.target).parents(".media-body").children(".reply-window").css({
-          display: "none",
-        });
-      }
-      this.reply_window = !this.reply_window;
     },
     star: function (message) {
       $("._j_starcount").removeClass(function () {
@@ -431,7 +317,7 @@ export default {
         let userAccount = JSON.parse(sessionStorage.getItem("user")).userAccount;
         // alert(userAccount);
         console.log(stars,comment,siteId,userAccount,image)
-        Service.post("/comments",qs.stringify({
+        Service.post("/evaluate",qs.stringify({
             userAccount:userAccount,
             siteId:siteId,
             stars: stars,
@@ -446,6 +332,42 @@ export default {
         })
       }else{
         alert("请完善信息后再提交")
+      }
+    },
+    //获取评价 以及对于评价的回复
+    getCommentsAndReply:function(){
+      let siteId = this.viewIntroduce.id;//获取地点的siteId
+      //获取到所有的评价  以及对于每一个评价所对应的回复
+      Service.get("/getComments",{
+        params:{
+          siteId:siteId
+        }
+      }).then(response=>{
+        this.userinfos = response.data.data
+      }).catch(function(error){
+        console.log(error)
+      })
+    },
+    //上传评论或者回复
+    uploadComment:function(){
+      let commentMessage = this.commentMessage;
+      let parentAccount = this.parentAccount;
+      let siteId = this.siteId;
+      let userAccount = this.userAccount;
+      console.log(commentMessage,parentAccount,siteId,userAccount)
+      if(commentMessage!==""&&siteId!==""&&parentAccount!==""&&userAccount!==""){
+        Service.post("/comment",qs.stringify({
+          parentAccount:parentAccount,
+          siteId:siteId,
+          userAccount:userAccount,
+          commentMessage: commentMessage
+        })).then(response=>{
+          console.log(response.data)
+        }).catch(function (error) {
+          console.log(error)
+        })
+      }else{
+        alert("请填写评论后提交")
       }
     }
   },

@@ -1,22 +1,15 @@
 <template>
   <form>
     <div class="form-group">
-      <label for="telephone">手机号</label>
-      <input
-        type="tel"
-        class="form-control"
-        id="telephone"
-        aria-describedby="emailHelp"
-      />
+      <label for="telephone">邮箱</label>
+      <input type="tel" class="form-control" id="telephone" aria-describedby="emailHelp"/>
     </div>
     <div class="form-group">
       <label for="confirmcode">验证码</label>
       <div class="input-group">
-        <input type="text" class="form-control" id="confirmcode" />
+        <input type="text" class="form-control" id="confirmcode" v-model="code"/>
         <div class="input-group-append">
-          <span id="getCode" class="input-group-text" @click="avoidMultiClick"
-            >获取验证码</span
-          >
+          <span id="getCode" class="input-group-text" @click="avoidMultiClick">获取验证码</span>
         </div>
       </div>
     </div>

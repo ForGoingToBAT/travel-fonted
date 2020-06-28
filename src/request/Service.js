@@ -2,7 +2,7 @@ import axios from 'axios'
 const ConfigBaseURL = 'http://localhost:8099/'
 //使用create方法创建axios实例
 export const Service = axios.create({
-    timeout: 7000, // 请求超时时间
+    timeout: 60000, // 请求超时时间
     baseURL: ConfigBaseURL,
 })
 // 添加请求拦截器

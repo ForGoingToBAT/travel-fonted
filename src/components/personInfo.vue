@@ -16,7 +16,7 @@
     <div class="form-row">
       <div class="form-group col-md-8">
         <label for="userMoney">账户余额</label>
-        <input type="text" class="form-control" id="userMoney" name="userMoney" v-model="userMoney"/>
+        <input type="text" class="form-control" id="userMoney" name="userMoney" v-model="userMoney" disabled/>
       </div>
       <div class="form-group col-md-4">
         <label>点击充钱享受快乐</label><br />
@@ -55,6 +55,11 @@ export default {
       userMoney:'',
       userTelephone:'',
       city:''
+    }
+  },
+  methods:{
+    chargeMoney:function () {
+
     }
   }
 };
