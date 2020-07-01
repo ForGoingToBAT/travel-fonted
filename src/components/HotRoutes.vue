@@ -5,11 +5,10 @@
       <a href="#"><span>最热门路线>></span></a>
     </div>
     <div class="card mb-3" v-for="(route, index) in routes" v-bind:key="index">
-      <routeWay :route="route" v-if="route"></routeWay>
+      <routeWay :route="route" :name = "sofency" v-if="route"></routeWay>
     </div>
   </div>
 </template>
-
 <script>
 import routeWay from "./routeWay.vue";
 import Service from '../request/Service'
@@ -23,7 +22,8 @@ export default {
   data() {
     return {
       page:1,//当前的页数
-      routes: null
+      routes: null,
+      sofency:"alice"
     };
   },
   methods:{
@@ -41,7 +41,6 @@ export default {
   }
 };
 </script>
-
 <style scoped>
 .card img {
   height: 150px;

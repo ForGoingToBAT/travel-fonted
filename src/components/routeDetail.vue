@@ -3,31 +3,15 @@
   <div class="container">
     <div class="de-header" style="display: flex; position: relative;">
       <div class="left">
-        <h3>{{ title }}</h3>
+        <h3>{{ route.routeName }}</h3>
         <span class="season">
-          <i class="icon-season"></i>
-          最佳季节:
-          <strong>全年</strong>
+          <i class="icon-season"></i>最佳季节:<strong>全年</strong>
         </span>
       </div>
-      <div
-        class="right"
-        style="position: absolute; right: 0; top: 0; display: flex;"
-      >
-        <a class="clickStar" href="#">
-          <i class="stars"></i><br />
-          <div class="starNum">
-            点赞
-            <span>20000</span>
-          </div>
-        </a>
+      <div class="right" style="position: absolute; right: 0; top: 0; display: flex;">
+        <a class="clickStar" href="#"><i class="stars"></i><br /><div class="starNum">点赞<span>{{route.thumpsNum}}</span></div></a>
         <!--收藏-->
-        <a class="clickRestore" href="#">
-          <i class="restores"></i><br />
-          <div class="restoreNum">
-            收藏
-            <span>20000</span>
-          </div>
+        <a class="clickRestore" href="#"><i class="restores"></i><br /><div class="restoreNum">收藏<span>{{route.restoreNums}}</span></div>
         </a>
       </div>
     </div>
@@ -49,9 +33,8 @@
         <h3 class="router1">行程概况</h3>
         <div id="routeIntro" style="font-size: 14px;">
           <span>起点----></span>
-          <span v-for="(view, index) in views" v-bind:key="index">
-            <a :href="view.id">{{ view.view }}</a
-            >--->
+          <span v-for="(site, index) in sites" v-bind:key="index">
+            <a :href="site.id">{{ site.siteName }}</a>--->
           </span>
           <span>终点</span>
         </div>
@@ -61,63 +44,43 @@
       <div class="content">
         <h3 class="router2">行程详情</h3>
         <div id="routeIntroDetails">
-          <div class="routeIntroDetail" style="position: relative;">
-            <div class="viewName">北京</div>
-            <span class="steps">D1</span>
+          <div class="routeIntroDetail" style="position: relative;margin-bottom: 50px" v-for="(site,index) in sites" :key="index">
+            <div class="viewName">{{site.siteName}}</div>
+            <span class="steps">D{{index}}</span>
             <hr />
-            <div>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam
-              ea ex illo in magnam maxime molestias nemo, placeat qui ratione
-              reprehenderit repudiandae sed soluta! Ab dolores eius perferendis
-              quam voluptates.
-            </div>
+            <div>{{site.siteDetail}}</div>
             <hr />
             <div class="viewImages">
-              <img src="../static/img/demo2.jpg" class="col-md-4" />
-              <img src="../static/img/demo2.jpg" class="col-md-4" />
-              <img src="../static/img/demo2.jpg" class="col-md-4" />
+              <a v-for="(img,index) in siteImages(site.siteImg)"  :key="index">
+                <img :src="img" class="col-md-4" v-if="index<3"/>
+              </a>
             </div>
           </div>
         </div>
       </div>
       <hr />
       <div class="content">
-        <h3 class="router3" style="text-align: center; margin-bottom: 30px;">
-          线路讨论区
-        </h3>
+        <h3 class="router3" style="text-align: center; margin-bottom: 30px;">线路讨论区</h3>
         <div id="discuss">
-          <div
-            class="comment-form clearfix"
-            style="width: 80%; margin-left: auto; margin-right: auto;"
-          >
-            <textarea></textarea>
-            <input type="button" value="发布" id="submitComment" />
+          <div class="comment-form clearfix" style="width: 80%; margin-left: auto; margin-right: auto;">
+            <textarea v-model="discuss"></textarea>
+            <input type="button" value="发布" id="submitComment" @click="submitCommit()"/>
           </div>
         </div>
 
         <div class="viewComments">
-          <div class="viewComment" style="display: flex;">
+          <div class="viewComment" style="display: flex;margin-bottom: 30px" v-for="(comment,index) in commentss" :key="index">
             <div class="viewComment-left" style="margin-right: 20px;">
-              <img
-                src="../static/img/logo.png"
-                width="40px"
-                height="40px"
-                style="border-radius: 50%;"
-              />
+              <img :src="comment.userFont" width="40px" height="40px" style="border-radius: 50%;"/>
             </div>
             <div class="viewComment-right" style="font-size: 12px;">
               <div class="viewComment-head">
-                <a><span>Sofency</span></a>
-                <span style="display: inline-block; padding-left: 5px;"
-                  >2020-12-09 11:21:11</span
-                >
+                <a><span>{{comment.userNickname}}</span></a>
+                <span style="display: inline-block; padding-left: 5px;">{{comment.comments.commentDate}}</span>
                 <a>回复</a>
               </div>
               <div class="viewComment-body">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab at
-                autem blanditiis consectetur consequatur cum exercitationem
-                facilis hic impedit laudantium maxime, numquam perspiciatis qui,
-                quibusdam quidem sint soluta suscipit vitae.
+               {{comment.comments.commentContent}}
               </div>
             </div>
           </div>
@@ -129,30 +92,48 @@
 
 <script>
 import $ from "jquery";
+import Service from '../request/Service'
+import Qs from 'qs';
 export default {
   name: "routeDetail",
+  computed:{
+    siteImages(){
+      return function(siteImg){
+        return siteImg.split(';')
+      }
+    }
+  },
   mounted() {
     window.addEventListener("scroll", this.handleScroll);
-    this.title = this.$route.query.title;
-    console.log(this.$route.query.title);
+    this.routeId = this.$route.query.routeId;
+    this.orderId = this.$route.query.orderId;//订单号
+    Service.post("/getRouteDetail",Qs.stringify({
+      routeId:this.routeId
+    })).then(response=>{
+      let data = response.data.data;//获取后端传递来的数据
+      this.route = data.route;//路线
+      this.sites = data.sites;//地点
+    }).catch(function(error){
+      console.log(error)
+    });
+    //获取评论的信息
+    Service.post("/getRouteComments",Qs.stringify({
+      routeId:this.routeId
+    })).then(response=>{
+      let data = response.data.data;//获取后端传递来的数据
+      this.commentss = data;
+    }).catch(function(error){
+      console.log(error)
+    });
   },
   data() {
     return {
-      title: "测试",
-      views: [
-        {
-          view: "兵马用",
-          id: "1",
-        },
-        {
-          view: "故宫",
-          id: "1",
-        },
-        {
-          view: "兵马用",
-          id: "1",
-        },
-      ],
+      orderId:"",
+      routeId: "",
+      route:"",
+      sites:"",
+      discuss:"",
+      commentss:[]
     };
   },
   methods: {
@@ -174,6 +155,32 @@ export default {
           backgroundColor: "",
           width: "",
         });
+      }
+    },
+    submitCommit:function(){
+      let item = sessionStorage.getItem("isLogin");
+      if(item==="true"){
+        let user = JSON.parse(sessionStorage.getItem("user"));
+        let userAccount = user.userAccount;//获取用户的账户
+        let comment = this.discuss;//用户的评论
+        let routeId = this.routeId;
+        let orderId = this.orderId;
+        Service.post("/routeComment",Qs.stringify({
+          userAccount:userAccount,
+          comment: comment,
+          routeId: routeId,
+          orderId:orderId
+        })).then(response=>{
+          console.log(response.data)
+          if(response.data.code===200){
+            window.location.reload();
+          }
+        }).catch(function (error) {
+          console.log(error)
+        })
+
+      }else{
+        alert("请登陆后再评价")
       }
     },
     scroll: function (message) {

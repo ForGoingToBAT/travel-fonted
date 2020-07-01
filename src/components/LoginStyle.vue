@@ -10,7 +10,7 @@
     </div>
     <div class="footer">
       <button id="account" class="btn btn-primary" @click="changeStyle(1)">账户登录</button>
-      <button id="telLogin" class="btn btn-primary" @click="changeStyle(2)">手机号码登录</button>
+      <button id="telLogin" class="btn btn-primary" @click="changeStyle(2)">邮箱登录</button>
     </div>
   </div>
 </template>

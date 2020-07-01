@@ -4,7 +4,7 @@
     <div class="introduce">
       <a href="javascript:void(0);" @click="viewsScroll(1)">概况</a>
       <a href="javascript:void(0);" @click="viewsScroll(2)">评论</a>
-      <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#staticBackdrop">
+      <button type="button" class="btn btn-primary float-right" @click="write()">
         我要点评
       </button>
     </div>
@@ -201,6 +201,15 @@ export default {
     };
   },
   methods: {
+    write:function(){
+      //检测是否用户登录
+      let user = JSON.parse(sessionStorage.getItem("user"));
+      if(user==null){
+        alert("请登陆后再点评")
+      }else{
+        $("#staticBackdrop").modal("show");
+      }
+    },
     writeComment: function (e,message) {
       if (this.reply_window) {
         $(e.target).parents(".media-body").children(".reply-window").css({

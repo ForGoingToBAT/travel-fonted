@@ -2,11 +2,11 @@
   <form>
     <div class="form-group">
       <label for="account">账号</label>
-      <input type="text" class="form-control" id="account" v-model="account"/>
+      <input type="text" class="form-control" id="account" v-model="account" autoComplete="new-password"/>
     </div>
     <div class="form-group">
       <label for="password">密码</label>
-      <input type="password" class="form-control" id="password" v-model="password" />
+      <input type="password" class="form-control" id="password" v-model="password" autoComplete="new-password" />
     </div>
     <div class="form-group form-check">
       <input type="checkbox" class="form-check-input" id="rememberme" v-model="rememberMe"/>
@@ -45,7 +45,6 @@ export default {
               },
               success:function(data){
                 if(data.code===200){
-                  that.sendMsgToPerson(data.data)//将数据传递给状态管理中心
                   sessionStorage.setItem("user",JSON.stringify(data.data))
                   sessionStorage.setItem("isLogin","true");
                   that.$router.push({ path: "/"});

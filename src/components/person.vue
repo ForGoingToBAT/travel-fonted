@@ -9,6 +9,7 @@
         <router-link class="list-group-item" to="/person">我的个人资料</router-link>
         <router-link class="list-group-item" to="/person/userRouter">我的订单</router-link>
         <router-link class="list-group-item" to="/person/userMessage">我的消息</router-link>
+        <router-link class="list-group-item" to="/person/changePwd">修改密码</router-link>
       </ul>
     </div>
     <div class="col-lg-9 col-md-9" style="border: 1px solid #c0c0c0;">

@@ -1,5 +1,5 @@
 <template>
-  <div class="row no-gutters" @click.stop="toDetail(route.route.routeTitle)">
+  <div class="row no-gutters" @click.stop="toDetail(route.route.id)">
     <div class="col-md-2">
       <img :src="route.route.routeImg" class="card-img" alt="..." />
     </div>
@@ -46,13 +46,15 @@ export default {
       this.$router.push({ path: "/views", query: { site: this.$Base64.encode(JSON.stringify(message)) } });
     },
     toDetail: function (message) {
-      this.$router.push({ path: "/routeDetail", query: { title: message } });
+      this.$router.push({ path: "/routeDetail", query: { routeId: message } });
     },
     BookTicket: function (e) {
-      let obj = JSON.parse(sessionStorage.getItem("user"));
-      if(obj===null){
+      let obj = sessionStorage.getItem("user");
+      console.log(obj)
+      if(obj===null||obj===""||obj===undefined){
         alert("你还没有登录,请登陆后操作")
       }else{
+        obj = JSON.parse(sessionStorage.getItem("user"));
         let userAccount = obj.userAccount;
         let userMoney = obj.userMoney;
         let routePrice = e.currentTarget.dataset.routeprice;

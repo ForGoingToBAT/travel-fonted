@@ -11,6 +11,7 @@ import personInfo from './components/personInfo'
 import UserRouter from './components/UserRouter'
 import UserMessage from "./components/UserMessage"
 import RouteDetail from './components/routeDetail'
+import changePwd  from "@/components/changePwd";
 Vue.use(VueRouter)
 
 export default new VueRouter({
@@ -59,6 +60,10 @@ export default new VueRouter({
                 {
                     path:"/person/userMessage",
                     component:UserMessage
+                },
+                {
+                    path:"/person/changePwd",
+                    component:changePwd
                 }
             ]
         }
